@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "GoodWeatherNew"
 include ':app'
+include ':library'
