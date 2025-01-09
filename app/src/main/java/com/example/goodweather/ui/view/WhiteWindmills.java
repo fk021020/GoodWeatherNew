@@ -1,4 +1,4 @@
-package com.example.goodweather.view;
+package com.example.goodweather.ui.view;
 
 import android.content.Context;
 import android.graphics.Canvas;

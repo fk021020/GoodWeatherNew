@@ -2,6 +2,7 @@ package com.example.goodweather.api;
 
 import static com.example.goodweather.Constant.API_KEY;
 
+import com.example.goodweather.db.bean.BingResponse;
 import com.example.goodweather.db.bean.DailyResponse;
 import com.example.goodweather.db.bean.LifestyleResponse;
 import com.example.goodweather.db.bean.NowResponse;
@@ -55,5 +56,13 @@ public interface ApiService {
      */
     @GET("/v7/indices/1d?key=" + API_KEY)
     Observable<LifestyleResponse> lifestyle(@Query("type") String type, @Query("location") String location);
+
+    /**
+     * 必应每日一图
+     *
+     * @return BiYingImgResponse 必应壁纸返回
+     */
+    @GET("/HPImageArchive.aspx?format=js&idx=0&n=1")
+    Observable<BingResponse> bing();
 
 }

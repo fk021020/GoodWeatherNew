@@ -24,4 +24,15 @@ public class Constant {
      * 今天第一次启动时间
      */
     public static final String FIRST_STARTUP_TIME_TODAY = "firstStartupTimeToday";
+
+    /**
+     * 是否使用必应壁纸
+     */
+    public static final String USED_BING = "usedBing";
+
+    /**
+     * 必应图片地址
+     */
+    public static final String BING_URL = "bingUrl";
+
 }
