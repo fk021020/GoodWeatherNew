@@ -7,42 +7,43 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.example.goodweather.Constant;
 import com.example.goodweather.api.ApiService;
-import com.example.goodweather.bean.SearchCityResponse;
+import com.example.goodweather.bean.NowResponse;
 import com.example.library.network.ApiType;
 import com.example.library.network.NetworkApi;
 import com.example.library.network.observer.BaseObserver;
 
 /**
- * 搜索城市存储库，数据处理
+ * 天气存储库，数据处理
+ * (实况天气)
  */
 @SuppressLint("CheckResult")
-public class SearchCityRepository {
+public class WeatherRepository {
 
-    private static final String TAG = SearchCityRepository.class.getSimpleName();
+    private static final String TAG = WeatherRepository.class.getSimpleName();
 
     /**
-     * 搜索城市
+     * 实况天气
      *
      * @param responseLiveData 成功数据
      * @param failed           错误信息
-     * @param cityName         城市名称
+     * @param cityId           城市ID
      */
-    public void searchCity(MutableLiveData<SearchCityResponse> responseLiveData,
-                           MutableLiveData<String> failed, String cityName) {
-        String type = "搜索城市-->";
-        NetworkApi.createService(ApiService.class, ApiType.SEARCH).searchCity(cityName)
+    public void nowWeather(MutableLiveData<NowResponse> responseLiveData,
+                           MutableLiveData<String> failed, String cityId) {
+        String type = "实时天气-->";
+        NetworkApi.createService(ApiService.class, ApiType.WEATHER).nowWeather(cityId)
                 .compose(NetworkApi.applySchedulers(new BaseObserver<>() {
                     @Override
-                    public void onSuccess(SearchCityResponse searchCityResponse) {
-                        if (searchCityResponse == null) {
-                            failed.postValue("搜索城市数据为null，请检查城市名称是否正确。");
+                    public void onSuccess(NowResponse nowResponse) {
+                        if (nowResponse == null) {
+                            failed.postValue("实况天气数据为null，请检查城市ID是否正确。");
                             return;
                         }
                         //请求接口成功返回数据，失败返回状态码
-                        if (Constant.SUCCESS.equals(searchCityResponse.getCode())) {
-                            responseLiveData.postValue(searchCityResponse);
+                        if (Constant.SUCCESS.equals(nowResponse.getCode())) {
+                            responseLiveData.postValue(nowResponse);
                         } else {
-                            failed.postValue(type + searchCityResponse.getCode());
+                            failed.postValue(type + nowResponse.getCode());
                         }
                     }
 
