@@ -1,4 +1,4 @@
-package com.example.goodweather.adapter;
+package com.example.goodweather.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -7,12 +7,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.goodweather.bean.DailyResponse;
-import com.example.goodweather.bean.LifestyleResponse;
-import com.example.goodweather.databinding.ItemDailyRvBinding;
+import com.example.goodweather.db.bean.LifestyleResponse;
 import com.example.goodweather.databinding.ItemLifestyleRvBinding;
-import com.example.goodweather.utils.EasyDate;
-import com.example.goodweather.utils.WeatherUtil;
 
 import java.util.List;
 

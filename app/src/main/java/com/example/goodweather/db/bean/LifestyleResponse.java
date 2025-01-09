@@ -1,4 +1,4 @@
-package com.example.goodweather.bean;
+package com.example.goodweather.db.bean;
 
 import java.util.List;
 

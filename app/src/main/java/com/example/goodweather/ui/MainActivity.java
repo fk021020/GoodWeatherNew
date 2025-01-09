@@ -1,4 +1,4 @@
-package com.example.goodweather;
+package com.example.goodweather.ui;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -18,15 +18,17 @@ import android.view.MenuItem;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.example.goodweather.adapter.DailyAdapter;
-import com.example.goodweather.adapter.LifestyleAdapter;
-import com.example.goodweather.bean.DailyResponse;
-import com.example.goodweather.bean.LifestyleResponse;
-import com.example.goodweather.bean.NowResponse;
-import com.example.goodweather.bean.SearchCityResponse;
+import com.example.goodweather.R;
+import com.example.goodweather.ui.adapter.DailyAdapter;
+import com.example.goodweather.ui.adapter.LifestyleAdapter;
+import com.example.goodweather.db.bean.DailyResponse;
+import com.example.goodweather.db.bean.LifestyleResponse;
+import com.example.goodweather.db.bean.NowResponse;
+import com.example.goodweather.db.bean.SearchCityResponse;
 import com.example.goodweather.databinding.ActivityMainBinding;
 import com.example.goodweather.location.LocationCallback;
 import com.example.goodweather.location.MyLocationListener;
+import com.example.goodweather.utils.CityDialog;
 import com.example.goodweather.utils.EasyDate;
 import com.example.goodweather.viewmodel.MainViewModel;
 import com.example.library.base.NetworkActivity;
@@ -34,7 +36,7 @@ import com.example.library.base.NetworkActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends NetworkActivity<ActivityMainBinding> implements LocationCallback {
+public class MainActivity extends NetworkActivity<ActivityMainBinding> implements LocationCallback, CityDialog.SelectedCityCallback {
 
     //权限数组
     private final String[] permissions = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -52,6 +54,8 @@ public class MainActivity extends NetworkActivity<ActivityMainBinding> implement
     //生活指数数据和适配器
     private final List<LifestyleResponse.DailyBean> lifestyleList = new ArrayList<>();
     private final LifestyleAdapter lifestyleAdapter = new LifestyleAdapter(lifestyleList);
+    //城市弹窗
+    private CityDialog cityDialog;
 
     /**
      * 注册意图
@@ -74,11 +78,18 @@ public class MainActivity extends NetworkActivity<ActivityMainBinding> implement
      */
     @Override
     protected void onCreate() {
+        //沉浸式
         setFullScreenImmersion();
+        //初始化定位
         initLocation();
+        //请求权限
         requestPermission();
+        //初始化视图
         initView();
+        //绑定ViewModel
         viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        //获取城市数据
+        viewModel.getAllCity();
     }
 
     /**
@@ -107,7 +118,7 @@ public class MainActivity extends NetworkActivity<ActivityMainBinding> implement
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.item_switching_cities) {
-            showMsg("切换城市");
+            if (cityDialog != null) cityDialog.show();
         }
         return true;
     }
@@ -181,6 +192,12 @@ public class MainActivity extends NetworkActivity<ActivityMainBinding> implement
                     lifestyleAdapter.notifyDataSetChanged();
                 }
             });
+            //获取本地城市数据返回
+            viewModel.cityMutableLiveData.observe(this, provinces -> {
+                //城市弹窗初始化
+                cityDialog = CityDialog.getInstance(MainActivity.this, provinces);
+                cityDialog.setSelectedCityCallback(this);
+            });
             //错误信息返回
             viewModel.failed.observe(this, this::showLongMsg);
         }
@@ -200,7 +217,6 @@ public class MainActivity extends NetworkActivity<ActivityMainBinding> implement
         //开始定位
         startLocation();
     }
-
 
     /**
      * 初始化定位
@@ -253,4 +269,16 @@ public class MainActivity extends NetworkActivity<ActivityMainBinding> implement
         }
     }
 
+    /**
+     * 选中城市
+     *
+     * @param cityName 城市名称
+     */
+    @Override
+    public void selectedCity(String cityName) {
+        //搜索城市
+        viewModel.searchCity(cityName);
+        //显示所选城市
+        binding.tvCity.setText(cityName);
+    }
 }
