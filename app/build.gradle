@@ -25,10 +25,12 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
+        encoding 'UTF-8'
     }
 
     buildFeatures {
         viewBinding true    //开启ViewBinding
+        buildConfig = true  // 启用 BuildConfig 的生成功能
     }
 
     //加载so文件
@@ -66,4 +68,6 @@ dependencies {
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.14.2'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.14.2'
+
+
 }
