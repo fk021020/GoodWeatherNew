@@ -5,6 +5,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.goodweather.databinding.ItemHourlyRvBinding;
 import com.example.goodweather.db.bean.HourlyResponse;
 import com.example.goodweather.utils.EasyDate;
@@ -18,6 +19,12 @@ import java.util.List;
 public class HourlyAdapter extends RecyclerView.Adapter<HourlyAdapter.ViewHolder> {
 
     private final List<HourlyResponse.HourlyBean> hourlyBeans;
+
+    private OnClickItemCallback onClickItemCallback;
+
+    public void setOnClickItemCallback(OnClickItemCallback onClickItemCallback) {
+        this.onClickItemCallback = onClickItemCallback;
+    }
 
     public HourlyAdapter(List<HourlyResponse.HourlyBean> dailyBeans) {
         this.hourlyBeans = dailyBeans;
