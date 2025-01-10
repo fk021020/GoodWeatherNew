@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.goodweather.WeatherApp;
+import com.example.goodweather.db.bean.MyCity;
 import com.example.goodweather.db.bean.Province;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class CityRepository {
     public void addCityData(List<Province> cityList) {
         Province[] provinceArray = cityList.toArray(new Province[0]);
         Completable insertAll = WeatherApp.getDb().provinceDao().insertAll(provinceArray);
-        com.example.goodweather.repository.CustomDisposable.addDisposable(insertAll, () -> Log.d(TAG, "addCityData: 插入数据成功。"));
+        CustomDisposable.addDisposable(insertAll, () -> Log.d(TAG, "addCityData: 插入数据成功。"));
     }
 
     /**
@@ -41,6 +42,34 @@ public class CityRepository {
      */
     public void getCityData(MutableLiveData<List<Province>> listMutableLiveData) {
         Flowable<List<Province>> listFlowable = WeatherApp.getDb().provinceDao().getAll();
-        com.example.goodweather.repository.CustomDisposable.addDisposable(listFlowable, listMutableLiveData::postValue);
+        CustomDisposable.addDisposable(listFlowable, listMutableLiveData::postValue);
+    }
+
+    /**
+     * 获取我的城市所有数据
+     */
+    public void getMyCityData(MutableLiveData<List<MyCity>> listMutableLiveData) {
+        CustomDisposable.addDisposable(WeatherApp.getDb().myCityDao().getAllCity(), listMutableLiveData::postValue);
+    }
+
+    /**
+     * 添加我的城市数据
+     */
+    public void addMyCityData(MyCity myCity) {
+        CustomDisposable.addDisposable(WeatherApp.getDb().myCityDao().insertCity(myCity), () -> Log.d(TAG, "addMyCityData: 插入数据成功。"));
+    }
+
+    /**
+     * 删除我的城市数据
+     */
+    public void deleteMyCityData(String cityName) {
+        CustomDisposable.addDisposable(WeatherApp.getDb().myCityDao().deleteCity(cityName), () -> Log.d(TAG, "deleteMyCityData: 删除数据成功"));
+    }
+
+    /**
+     * 删除我的城市数据
+     */
+    public void deleteMyCityData(MyCity myCity) {
+        CustomDisposable.addDisposable(WeatherApp.getDb().myCityDao().deleteCity(myCity), () -> Log.d(TAG, "deleteMyCityData: 删除数据成功"));
     }
 }
